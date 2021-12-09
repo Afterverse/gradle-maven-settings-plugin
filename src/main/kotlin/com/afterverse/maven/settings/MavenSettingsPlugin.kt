@@ -35,12 +35,14 @@ class MavenSettingsPlugin : Plugin<Project> {
     val mavenRepositories = this.filterIsInstance<MavenArtifactRepository>()
 
     mavenRepositories.forEach {
-      val server = settings.servers.firstOrNull { server -> it.name == server.id }
+      val server = settings.servers.firstOrNull { server -> it.name.matchesServerId(server.id) }
         ?: return@forEach
 
       it.addCredentials(server)
     }
   }
+
+  private fun String.matchesServerId(serverId: String) = this.matches(Regex("^$serverId\\d*$"))
 
   private fun MavenArtifactRepository.addCredentials(server: Server) {
     if (server.username != null && server.password != null) {
