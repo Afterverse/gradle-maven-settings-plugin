@@ -45,11 +45,13 @@ class MavenSettingsPlugin : Plugin<Project> {
   private fun String.matchesServerId(serverId: String) = this.matches(Regex("^$serverId\\d*$"))
 
   private fun MavenArtifactRepository.addCredentials(server: Server) {
-    if (server.username != null && server.password != null) {
-      this.credentials {
-        it.username = server.username
-        it.password = server.password
-      }
+    if (this.credentials.username != null || this.credentials.password != null) {
+      return
+    }
+
+    this.credentials {
+      it.username = server.username
+      it.password = server.password
     }
   }
 
