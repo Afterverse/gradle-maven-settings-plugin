@@ -1,0 +1,27 @@
+name: Pull Request - CI
+
+on: [pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Abort previous build instances
+        uses: n1hility/cancel-previous-runs@v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup JDK
+        uses: actions/setup-java@v2
+        with:
+          distribution: adopt
+          java-version: 16
+
+      - name: Run build
+        run: ./gradlew clean compileKotlin compileTestKotlin --parallel
+
+      - name: Run tests
+        run: ./gradlew check --no-parallel

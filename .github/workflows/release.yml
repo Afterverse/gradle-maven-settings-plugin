@@ -1,0 +1,35 @@
+name: Release
+
+on:
+  push:
+    branches:
+    - main
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Abort previous build instances
+      uses: n1hility/cancel-previous-runs@v2
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Setup Git
+      run: |
+        git config --local user.email "developers@afterverse.com"
+        git config --local user.name "Afterverse CI"
+
+    - name: Setup JDK
+      uses: actions/setup-java@v2
+      with:
+        distribution: adopt
+        java-version: 16
+
+    - name: Run release task
+      run: ./gradlew release
+      env:
+        AFTERVERSE_NEXUS_USERNAME: ${{ secrets.AFTERVERSE_NEXUS_USERNAME }}
+        AFTERVERSE_NEXUS_PASSWORD: ${{ secrets.AFTERVERSE_NEXUS_PASSWORD }}

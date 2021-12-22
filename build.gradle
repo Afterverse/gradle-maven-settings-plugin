@@ -1,16 +1,5 @@
-buildscript {
-    ext.kotlin_version = kotlinVersion
-
-    repositories {
-        mavenCentral()
-    }
-
-    dependencies {
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
-    }
-}
-
 plugins {
+    id 'net.researchgate.release' version "$releasePluginVersion"
     id 'groovy-gradle-plugin'
     id 'maven-publish'
     id "org.jetbrains.kotlin.jvm" version "$kotlinVersion"
@@ -51,3 +40,43 @@ gradlePlugin {
         }
     }
 }
+
+release {
+    tagCommitMessage = "Setting version to "
+    newVersionCommitMessage = "Setting version to "
+    preTagCommitMessage = "Setting version to "
+    failOnUpdateNeeded = true
+
+    git {
+        requireBranch = "main"
+    }
+}
+
+task sourcesJar(type: Jar) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+publishing {
+    repositories {
+        maven {
+            url 'https://nexus.aftvrsys.com/repositories/kotlin-gradle-maven-settings-plugin/'
+
+            credentials {
+                username = System.getenv("AFTERVERSE_NEXUS_USERNAME")
+                password = System.getenv("AFTERVERSE_NEXUS_PASSWORD")
+            }
+        }
+    }
+
+    publications {
+        awsCodeArtifact(MavenPublication) {
+            from components.java
+            artifact sourcesJar
+        }
+    }
+}
+
+
+project.ext.set("release.useAutomaticVersion", "true")
+afterReleaseBuild.dependsOn publish
