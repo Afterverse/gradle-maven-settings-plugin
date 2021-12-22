@@ -60,7 +60,7 @@ task sourcesJar(type: Jar) {
 publishing {
     repositories {
         maven {
-            url 'https://nexus.aftvrsys.com/repositories/kotlin-gradle-maven-settings-plugin/'
+            url 'https://nexus.aftvrsys.com/repository/kotlin-gradle-maven-settings-plugin/'
 
             credentials {
                 username = System.getenv("AFTERVERSE_NEXUS_USERNAME")
