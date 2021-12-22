@@ -5,8 +5,8 @@ plugins {
     id "org.jetbrains.kotlin.jvm" version "$kotlinVersion"
 }
 
-sourceCompatibility = JavaVersion.VERSION_16
-targetCompatibility = JavaVersion.VERSION_16
+sourceCompatibility = JavaVersion.VERSION_11
+targetCompatibility = JavaVersion.VERSION_11
 
 repositories {
     mavenCentral()
